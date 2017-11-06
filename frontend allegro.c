@@ -15,7 +15,7 @@
 #define true 1          //lo hago como defines en vez de bool porque no toma la libreria stdbool
 #define false 0
 
-void decideLed(uint8_t portFlag, uint8_t bitFlag,ALLEGRO_BITMAP *ledverde, ALLEGRO_BITMAP *ledrojo );
+void decideLed(uint8_t portFlag, uint8_t bitFlag,ALLEGRO_BITMAP *ledverde, ALLEGRO_BITMAP *ledrojo ); //Funcion que decide e imprime los bits sellecionados por teclado
 
 int main (void)
 {
@@ -23,9 +23,7 @@ int main (void)
     uint8_t close_display = false;
     uint8_t cantleds =16;   //como el puerto inicial es D, inicializo en 16bits
     uint8_t puerto_actual = PUERTOD;    //Por default estoy en el puerto D
-    uint8_t tempMask8;
-    uint8_t tempMask16;
-    
+   
     //Declaracion de variables necesarias para allegro
     ALLEGRO_DISPLAY * display = NULL; //Creo un puntero a mi display
     ALLEGRO_BITMAP *ledverde = NULL;
@@ -254,16 +252,12 @@ int main (void)
                             }
                         
                     case ALLEGRO_KEY_B:
-                        tempMask16 = puertod.port;
-                        tempMask8 = puertod.portab.porta;
-                        maskOff(PUERTOD,0xFFFF);
                         
-                     
+                        maskOff(PUERTOA,0xFF);
+                        maskOff(PUERTOB,0xFF);
                         
-              
                         
-                            
-                        for (i=0,k=0 ; i < cantleds ; (i++, k+=50)) //inicializo los leds
+                        for (i=0; i < cantleds ; (i++)) //inicializo los leds
                             {
                             if (bitGet(PUERTOD,i) == false)    
                                     {
@@ -276,7 +270,6 @@ int main (void)
                                     
                                     else 
                                     {
-                                     
                                      al_draw_scaled_bitmap(ledverde,
                                         0,0, al_get_bitmap_width(ledverde),al_get_bitmap_height(ledverde),
                                         (WIDTH_LED*i),HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  //tamano que quiero que se imprima la imagen
@@ -286,8 +279,7 @@ int main (void)
                             
                             }
                         al_rest(2.0);
-                        maskOn(PUERTOD,tempMask16);
-                        
+                        maskOn(PUERTOD,tempMask16);                      
                         
                         for (i=0,k=0 ; i < cantleds ; (i++, k+=50)) //inicializo los leds
                             {
@@ -312,11 +304,7 @@ int main (void)
                             
                             }
                         break;
-                      
-                       
-                        
-                        
-                       
+                   
                     case ALLEGRO_KEY_ESCAPE:
                         close_display = true;
                         
@@ -464,9 +452,9 @@ void decideLed(uint8_t portFlag, uint8_t bitFlag,ALLEGRO_BITMAP *ledverde, ALLEG
                                     }
                         break;
                         default:
-                                if (bitGet(PUERTOD,bitFlag) == true)    
+                                if (bitGet(PUERTOA,bitFlag) == true)    
                                             {
-                                            BitClr (PUERTOD,bitFlag);
+                                            BitClr (PUERTOA,bitFlag);
                                             al_draw_scaled_bitmap(ledrojo,
                                                 0,0, al_get_bitmap_width(ledrojo),al_get_bitmap_height(ledrojo),
                                                 (WIDTH_LED*bitFlag),HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  //tamano que quiero que se imprima la imagen
@@ -476,7 +464,7 @@ void decideLed(uint8_t portFlag, uint8_t bitFlag,ALLEGRO_BITMAP *ledverde, ALLEG
 
                                             else 
                                             {
-                                             BitSet (PUERTOD,bitFlag);  
+                                             BitSet (PUERTOA,bitFlag);  
                                              al_draw_scaled_bitmap(ledverde,
                                                 0,0, al_get_bitmap_width(ledverde),al_get_bitmap_height(ledverde),
                                                 (WIDTH_LED*bitFlag),HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  //tamano que quiero que se imprima la imagen
