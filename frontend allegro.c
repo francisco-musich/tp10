@@ -253,37 +253,30 @@ int main (void)
                         
                     case ALLEGRO_KEY_B:
                         
-                        maskOff(PUERTOA,0xFF);
-                        maskOff(PUERTOB,0xFF);
                         
+                        for (i=0,k= (WIDTH_LED*8) ; i < cantleds ; (i++, k+=50)) //inicializo los leds
+                            {
+                            al_draw_scaled_bitmap(ledrojo,
+                                        0,0, al_get_bitmap_width(ledrojo),al_get_bitmap_height(ledrojo),
+                                        k,HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  //tamano que quiero que se imprima la imagen
+                                        0);
+                            }
                         
                         for (i=0; i < cantleds ; (i++)) //inicializo los leds
                             {
-                            if (bitGet(PUERTOD,i) == false)    
-                                    {
+                            
                                     al_draw_scaled_bitmap(ledrojo,
                                         0,0, al_get_bitmap_width(ledrojo),al_get_bitmap_height(ledrojo),
                                         (WIDTH_LED*i),HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  //tamano que quiero que se imprima la imagen
                                         0);
                                     al_flip_display();
                                     }
-                                    
-                                    else 
-                                    {
-                                     al_draw_scaled_bitmap(ledverde,
-                                        0,0, al_get_bitmap_width(ledverde),al_get_bitmap_height(ledverde),
-                                        (WIDTH_LED*i),HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  //tamano que quiero que se imprima la imagen
-                                        0);
-                                    al_flip_display();  
-                                    }
-                            
-                            }
+          
                         al_rest(2.0);
-                        maskOn(PUERTOD,tempMask16);                      
-                        
-                        for (i=0,k=0 ; i < cantleds ; (i++, k+=50)) //inicializo los leds
+                                                         
+                        for (i=0,k=0 ; i < 8 ; (i++, k+=50)) //inicializo los leds
                             {
-                            if (bitGet(PUERTOD,i) == false)    
+                            if (bitGet(PUERTOA,i) == false)    
                                     {
                                     al_draw_scaled_bitmap(ledrojo,
                                         0,0, al_get_bitmap_width(ledrojo),al_get_bitmap_height(ledrojo),
@@ -303,12 +296,32 @@ int main (void)
                                     }
                             
                             }
+                        for (i=0,k= (WIDTH_LED*8) ; i < 8 ; (i++, k+=50)) //inicializo los leds
+                            {
+                             if (bitGet(PUERTOB,i) == false) 
+                             {al_draw_scaled_bitmap(ledrojo,
+                                            0,0, al_get_bitmap_width(ledrojo),al_get_bitmap_height(ledrojo),
+                                            k,HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  //tamano que quiero que se imprima la imagen
+                                            0);
+                             al_flip_display();
+                             }
+                             else{
+                            
+                            al_draw_scaled_bitmap(ledverde,
+                                        0,0, al_get_bitmap_width(ledverde),al_get_bitmap_height(ledverde),
+                                        k,HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  //tamano que quiero que se imprima la imagen
+                                        0);
+                            }
+                        al_flip_display();  
+                             }
+                            
+                            
                         break;
                    
-                    case ALLEGRO_KEY_ESCAPE:
+                    case ALLEGRO_KEY_ESCAPE:        //Si se oprime escape, el programa cierra
                         close_display = true;
                         
-                    case ALLEGRO_KEY_0:
+                    case ALLEGRO_KEY_0:         // Dependiendo del numero que se toque, se prendera cierto led
                         id = 0;
                         decideLed(puerto_actual,id,ledverde,ledrojo );
                         break;
