@@ -24,6 +24,8 @@ int main (void)
     uint8_t cantleds =16;   //como el puerto inicial es D, inicializo en 16bits
     uint8_t puerto_actual = PUERTOD;    //Por default estoy en el puerto D
     uint8_t maskTemp8;
+    uint8_t maskTemp8a;
+    uint8_t maskTemp8b;
     //Declaracion de variables necesarias para allegro
     ALLEGRO_DISPLAY * display = NULL; //Creo un puntero a mi display
     ALLEGRO_BITMAP *ledverde = NULL;
@@ -252,15 +254,15 @@ int main (void)
                             }
                         
                     case ALLEGRO_KEY_B:
-                        if (puerto_actual == PUERTOB)
+                        if (puerto_actual == PUERTOB)       //En el caso de que se quiera blinkear el puerto b
                             {
-                            maskTemp8 = puertod.portab.portb;
-                            maskOff (puerto_actual,0xFF);
-                            for (i=0,k= (WIDTH_LED*8) ; i < cantleds ; (i++, k+=50)) //inicializo los leds
+                            maskTemp8 = puertod.portab.portb;       //creo mascara temporal
+                            maskOff (puerto_actual,0xFF);           //apago leds
+                            for (i=0,k= (WIDTH_LED*8) ; i < cantleds ; (i++, k+=50)) //imprimo estado de leds
                             if (bitGet(PUERTOB,i) == false) 
                              {al_draw_scaled_bitmap(ledrojo,
                                             0,0, al_get_bitmap_width(ledrojo),al_get_bitmap_height(ledrojo),
-                                            k,HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  //tamano que quiero que se imprima la imagen
+                                            k,HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  
                                             0);
                              al_flip_display();
                              }
@@ -268,19 +270,19 @@ int main (void)
                             
                             al_draw_scaled_bitmap(ledverde,
                                         0,0, al_get_bitmap_width(ledverde),al_get_bitmap_height(ledverde),
-                                        k,HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  //tamano que quiero que se imprima la imagen
+                                        k,HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  
                                         0);
                             
                             }
                             al_flip_display();
-                            al_rest(1.0);
-                            maskOn (puerto_actual,maskTemp8);
-                        for (i=0,k= (WIDTH_LED*8) ; i < cantleds ; (i++, k+=50)) //inicializo los leds
+                            al_rest(1.0);   //delay de tiempo de luces apagadas
+                            maskOn (puerto_actual,maskTemp8);       //enciendo los puertos nuevamente
+                        for (i=0,k= (WIDTH_LED*8) ; i < cantleds ; (i++, k+=50)) 
                             {
                             if (bitGet(PUERTOB,i) == false) 
                              {al_draw_scaled_bitmap(ledrojo,
                                             0,0, al_get_bitmap_width(ledrojo),al_get_bitmap_height(ledrojo),
-                                            k,HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  //tamano que quiero que se imprima la imagen
+                                            k,HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  
                                             0);
                              al_flip_display();
                              }
@@ -288,12 +290,13 @@ int main (void)
                             
                             al_draw_scaled_bitmap(ledverde,
                                         0,0, al_get_bitmap_width(ledverde),al_get_bitmap_height(ledverde),
-                                        k,HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  //tamano que quiero que se imprima la imagen
+                                        k,HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  
                                         0);
                             
                             }
-                        }}
-                        else if(puerto_actual = PUERTOA){
+                        }
+                        }
+                        else if(puerto_actual == PUERTOA){ //Idem anterior pero con puerto a
                             
                                 
                             maskTemp8 = puertod.portab.porta;
@@ -348,52 +351,11 @@ int main (void)
                         }
                             
                         
-                        else{
-                        for (i=0,k= (WIDTH_LED*8) ; i < cantleds ; (i++, k+=50)) //inicializo los leds
-                            {
-                            al_draw_scaled_bitmap(ledrojo,
-                                        0,0, al_get_bitmap_width(ledrojo),al_get_bitmap_height(ledrojo),
-                                        k,HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  //tamano que quiero que se imprima la imagen
-                                        0);
-                            }
-                        
-                        for (i=0; i < cantleds ; (i++)) //inicializo los leds
-                            {
-                            
-                                    al_draw_scaled_bitmap(ledrojo,
-                                        0,0, al_get_bitmap_width(ledrojo),al_get_bitmap_height(ledrojo),
-                                        (WIDTH_LED*i),HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  //tamano que quiero que se imprima la imagen
-                                        0);
-                                    al_flip_display();
-                                    }
-          
-                        al_rest(2.0);
-                                                         
-                        for (i=0,k=0 ; i < 8 ; (i++, k+=50)) //inicializo los leds
-                            {
-                            if (bitGet(PUERTOA,i) == false)    
-                                    {
-                                    al_draw_scaled_bitmap(ledrojo,
-                                        0,0, al_get_bitmap_width(ledrojo),al_get_bitmap_height(ledrojo),
-                                        (WIDTH_LED*i),HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  //tamano que quiero que se imprima la imagen
-                                        0);
-                                    al_flip_display();
-                                    }
-                                    
-                                    else 
-                                    {
-                                       
-                                     al_draw_scaled_bitmap(ledverde,
-                                        0,0, al_get_bitmap_width(ledverde),al_get_bitmap_height(ledverde),
-                                        (WIDTH_LED*i),HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  //tamano que quiero que se imprima la imagen
-                                        0);
-                                    al_flip_display();  
-                                    }
-                            
-                            }
-                        for (i=0,k= (WIDTH_LED*8) ; i < 8 ; (i++, k+=50)) //inicializo los leds
-                            {
-                             if (bitGet(PUERTOB,i) == false) 
+                        else{       //NO funciona bien, caso de que el puerto actual sea el D, anda para el puerto a pero el puerto B se apaga y no vuelve a prender
+                            maskTemp8b = puertod.portab.portb;      //mismo procedimiento que antes pero con los dos puertos a la vez
+                            maskOff (PUERTOB,0xFF);
+                            for (i=0,k= (WIDTH_LED*8) ; i < cantleds ; (i++, k+=50)) //inicializo los leds
+                            if (bitGet(PUERTOB,i) == false) 
                              {al_draw_scaled_bitmap(ledrojo,
                                             0,0, al_get_bitmap_width(ledrojo),al_get_bitmap_height(ledrojo),
                                             k,HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  //tamano que quiero que se imprima la imagen
@@ -404,11 +366,80 @@ int main (void)
                             
                             al_draw_scaled_bitmap(ledverde,
                                         0,0, al_get_bitmap_width(ledverde),al_get_bitmap_height(ledverde),
-                                        k,HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  //tamano que quiero que se imprima la imagen
+                                        k,HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  
                                         0);
+                            al_flip_display();
+                            
+                             }
+                            maskTemp8a = puertod.portab.porta;
+                            maskOff (PUERTOA,0xFF);
+                            for (i=0,k= 0 ; i < cantleds ; (i++, k+=50)) 
+                            {
+                             if (bitGet(PUERTOA,i) == false)    
+                                    {
+                                    al_draw_scaled_bitmap(ledrojo,
+                                        0,0, al_get_bitmap_width(ledrojo),al_get_bitmap_height(ledrojo),
+                                        (WIDTH_LED*i),HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  
+                                        0);
+                                    al_flip_display();
+                                    }
+                                    
+                                    else 
+                                    {
+                                       
+                                     al_draw_scaled_bitmap(ledverde,
+                                        0,0, al_get_bitmap_width(ledverde),al_get_bitmap_height(ledverde),
+                                        (WIDTH_LED*i),HEIGHT_LED,WIDTH_LED,HEIGHT_LED, 
+                                        0);
+                                    al_flip_display();  
+                                    }}
+                             al_rest(1.0);
+                             maskOn (PUERTOB,maskTemp8b);
+                             
+                        for (i=0,k= (WIDTH_LED*8) ; i < cantleds ; (i++, k+=50)) 
+                            {
+                            if (bitGet(PUERTOB,i) == false) 
+                             {al_draw_scaled_bitmap(ledrojo,
+                                            0,0, al_get_bitmap_width(ledrojo),al_get_bitmap_height(ledrojo),
+                                            k,HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  
+                                            0);
+                             al_flip_display();
+                             }
+                             else{
+                            
+                            al_draw_scaled_bitmap(ledverde,
+                                        0,0, al_get_bitmap_width(ledverde),al_get_bitmap_height(ledverde),
+                                        k,HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  
+                                        0);
+                            al_flip_display();
+                            
+                             }
+                        }
+                             maskOn(PUERTOA, maskTemp8a);
+                            for (i=0,k=0 ; i < 8 ; (i++, k+=50))
+                            {
+                             if (bitGet(PUERTOA,i) == false)    
+                                    {
+                                    al_draw_scaled_bitmap(ledrojo,
+                                        0,0, al_get_bitmap_width(ledrojo),al_get_bitmap_height(ledrojo),
+                                        (WIDTH_LED*i),HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  
+                                        0);
+                                    al_flip_display();
+                                    }
+                                    
+                                    else 
+                                    {
+                                       
+                                     al_draw_scaled_bitmap(ledverde,
+                                        0,0, al_get_bitmap_width(ledverde),al_get_bitmap_height(ledverde),
+                                        (WIDTH_LED*i),HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  
+                                        0);
+                                    al_flip_display();  
+                                    }
                             }
-                        al_flip_display();  
-                        }}
+                            
+                            
+                        }
                             
                             
                         break;
