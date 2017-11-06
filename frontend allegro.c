@@ -15,7 +15,7 @@
 #define true 1          //lo hago como defines en vez de bool porque no toma la libreria stdbool
 #define false 0
 
-void decideLed(uint8_t portFlag, uint8_t bitFlag,ALLEGRO_BITMAP *ledverde, ALLEGRO_BITMAP *ledrojo ); //Funcion que decide e imprime los bits sellecionados por teclado
+static void decideLed(uint8_t portFlag, uint8_t bitFlag,ALLEGRO_BITMAP *ledverde, ALLEGRO_BITMAP *ledrojo ); //Funcion que decide e imprime los bits sellecionados por teclado
 
 int main (void)
 {
@@ -567,7 +567,7 @@ int main (void)
     
     return 0;
 }
-void decideLed(uint8_t portFlag, uint8_t bitFlag,ALLEGRO_BITMAP *ledverde, ALLEGRO_BITMAP *ledrojo ){
+static void decideLed(uint8_t portFlag, uint8_t bitFlag,ALLEGRO_BITMAP *ledverde, ALLEGRO_BITMAP *ledrojo ){
    
                         switch(portFlag)
                         {
