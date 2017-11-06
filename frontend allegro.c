@@ -256,6 +256,7 @@ int main (void)
                     case ALLEGRO_KEY_B:
                         if (puerto_actual == PUERTOB)       //En el caso de que se quiera blinkear el puerto b
                             {
+                            
                             maskTemp8 = puertod.portab.portb;       //creo mascara temporal
                             maskOff (puerto_actual,0xFF);           //apago leds
                             for (i=0,k= (WIDTH_LED*8) ; i < cantleds ; (i++, k+=50)) //imprimo estado de leds
@@ -279,7 +280,7 @@ int main (void)
                             maskOn (puerto_actual,maskTemp8);       //enciendo los puertos nuevamente
                         for (i=0,k= (WIDTH_LED*8) ; i < cantleds ; (i++, k+=50)) 
                             {
-                            if (bitGet(PUERTOB,i) == false) 
+                            if (bitGet(PUERTOB,i) == false)             ///recorro cada bit del puerto, asi sabre si tengo que prenderlo o apagarlo en el front end.
                              {al_draw_scaled_bitmap(ledrojo,
                                             0,0, al_get_bitmap_width(ledrojo),al_get_bitmap_height(ledrojo),
                                             k,HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  
@@ -296,6 +297,7 @@ int main (void)
                             }
                         }
                         }
+                        
                         else if(puerto_actual == PUERTOA){ //Idem anterior pero con puerto a
                             
                                 
@@ -327,7 +329,7 @@ int main (void)
                             maskOn (puerto_actual,maskTemp8);
                         for (i=0,k=0 ; i < cantleds ; (i++, k+=50)) //inicializo los leds
                             {
-                             if (bitGet(PUERTOA,i) == false)    
+                             if (bitGet(PUERTOA,i) == false)    //recorro cada bit dle puerto, asi sabre si tengo que prenderlo o apagarlo en el front end.
                                     {
                                     al_draw_scaled_bitmap(ledrojo,
                                         0,0, al_get_bitmap_width(ledrojo),al_get_bitmap_height(ledrojo),
@@ -351,14 +353,14 @@ int main (void)
                         }
                             
                         
-                        else{       //NO funciona bien, caso de que el puerto actual sea el D, anda para el puerto a pero el puerto B se apaga y no vuelve a prender
+                        else{     
                             maskTemp8b = puertod.portab.portb;      //mismo procedimiento que antes pero con los dos puertos a la vez
                             maskOff (PUERTOB,0xFF);
-                            for (i=0,k= (WIDTH_LED*8) ; i < cantleds ; (i++, k+=50)) //inicializo los leds
+                            for (i=0,k= (WIDTH_LED*8) ; i < cantleds ; (i++, k+=50)) 
                             if (bitGet(PUERTOB,i) == false) 
                              {al_draw_scaled_bitmap(ledrojo,
                                             0,0, al_get_bitmap_width(ledrojo),al_get_bitmap_height(ledrojo),
-                                            k,HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  //tamano que quiero que se imprima la imagen
+                                            k,HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  
                                             0);
                              al_flip_display();
                              }
@@ -371,8 +373,8 @@ int main (void)
                             al_flip_display();
                             
                              }
-                            maskTemp8a = puertod.portab.porta;
-                            maskOff (PUERTOA,0xFF);
+                            maskTemp8a = puertod.portab.porta;      // Creo mascara temporal para A, en el futuro prendere los leds correspondientes con esta mascara
+                            maskOff (PUERTOA,0xFF);     //Apago A, asi logro el efecto del prendido y apagado
                             for (i=0,k= 0 ; i < cantleds ; (i++, k+=50)) 
                             {
                              if (bitGet(PUERTOA,i) == false)    
