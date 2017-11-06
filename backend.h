@@ -38,6 +38,7 @@ void maskOff(uint8_t flag_puerto,uint16_t mask);
 
 //Declaracion de variables globales
 extern port16_t puertod;
+extern uint16_t tempMask16;
 
 //Prototipos de simulaciones
 void Simulacion(void);
