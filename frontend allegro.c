@@ -15,7 +15,7 @@
 #define true 1          //lo hago como defines en vez de bool porque no toma la libreria stdbool
 #define false 0
 
-
+void decideLed(uint8_t portFlag, uint8_t bitFlag,ALLEGRO_BITMAP *ledverde, ALLEGRO_BITMAP *ledrojo );
 
 int main (void)
 {
@@ -23,7 +23,8 @@ int main (void)
     uint8_t close_display = false;
     uint8_t cantleds =16;   //como el puerto inicial es D, inicializo en 16bits
     uint8_t puerto_actual = PUERTOD;    //Por default estoy en el puerto D
-    port16_t tempMask;
+    uint8_t tempMask8;
+    uint8_t tempMask16;
     
     //Declaracion de variables necesarias para allegro
     ALLEGRO_DISPLAY * display = NULL; //Creo un puntero a mi display
@@ -33,7 +34,7 @@ int main (void)
     ALLEGRO_BITMAP *b = NULL; //Creo punteros a imagenes
     ALLEGRO_BITMAP *d = NULL; //Creo punteros a imagenes
     ALLEGRO_EVENT_QUEUE  *event_queue = NULL;
-    
+    uint8_t id = 0;
     
     //Inicializo Allegro
     if(!al_init()) 
@@ -212,7 +213,7 @@ int main (void)
                         
                         else
                         {
-                        maskOn (puerto_actual,0xFF);
+                        maskOn (puerto_actual,0xFFFF);
                         for (i=0,k=0 ; i < cantleds ; (i++, k+=50)) //inicializo los leds
                             {
                             al_draw_scaled_bitmap(ledverde,
@@ -240,7 +241,7 @@ int main (void)
                             }
                         else
                             {
-                            maskOff (puerto_actual,0xFF);
+                            maskOff (puerto_actual,0xFFFF);
                             for (i=0,k= 0 ; i < cantleds ; (i++, k+=50)) //inicializo los leds
                             {
                             al_draw_scaled_bitmap(ledrojo,
@@ -253,91 +254,112 @@ int main (void)
                             }
                         
                     case ALLEGRO_KEY_B:
+                        tempMask16 = puertod.port;
+                        tempMask8 = puertod.portab.porta;
+                        maskOff(PUERTOD,0xFFFF);
+                        
+                     
+                        
               
-                        switch (puerto_actual)
-                            {
-                                case PUERTOA:
+                        
                             
-                                    tempMask.portab.porta=puertod.portab.porta; //Guardamos el estado del puerto en una variable temporal
-                                    maskOff(puerto_actual, tempMask.portab.porta); //Se apagan los LEDs prendido
-                                    break;
-                                case PUERTOB:
-                                    tempMask.portab.porta=puertod.portab.portb; //Guardamos el estado del puerto en una variable temporal
-                                    maskOff(puerto_actual, tempMask.portab.porta); //Se apagan los LEDs prendido
-                                    break;
-                                case PUERTOD:
-                                    tempMask.port = puertod.port;
-                                    maskOff(puerto_actual, tempMask.port);
-                                    break;    
-                            }
                         for (i=0,k=0 ; i < cantleds ; (i++, k+=50)) //inicializo los leds
                             {
-                            if (bitGet(PUERTOD,i) == true)    
+                            if (bitGet(PUERTOD,i) == false)    
                                     {
                                     al_draw_scaled_bitmap(ledrojo,
                                         0,0, al_get_bitmap_width(ledrojo),al_get_bitmap_height(ledrojo),
-                                        (k-WIDTH_LED),HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  //tamano que quiero que se imprima la imagen
+                                        (WIDTH_LED*i),HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  //tamano que quiero que se imprima la imagen
                                         0);
                                     al_flip_display();
                                     }
                                     
                                     else 
                                     {
-                                     BitSet (PUERTOD,i);  
+                                     
                                      al_draw_scaled_bitmap(ledverde,
                                         0,0, al_get_bitmap_width(ledverde),al_get_bitmap_height(ledverde),
-                                        (k-WIDTH_LED),HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  //tamano que quiero que se imprima la imagen
+                                        (WIDTH_LED*i),HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  //tamano que quiero que se imprima la imagen
                                         0);
                                     al_flip_display();  
                                     }
                             
                             }
-                        al_rest(1.0);
-                        switch (puerto_actual)
-                            {
-                                case PUERTOA:
-                            
-                                    tempMask.portab.porta=puertod.portab.porta; //Guardamos el estado del puerto en una variable temporal
-                                    maskOn(puerto_actual, tempMask.portab.porta); //Se apagan los LEDs prendido
-                                    break;
-                                case PUERTOB:
-                                    tempMask.portab.porta=puertod.portab.portb; //Guardamos el estado del puerto en una variable temporal
-                                    maskOn(puerto_actual, tempMask.portab.porta); //Se apagan los LEDs prendido
-                                    break;
-                                case PUERTOD:
-                                    tempMask.port = puertod.port;
-                                    maskOn(puerto_actual, tempMask.port);
-                                    break;    
-                            }
+                        al_rest(2.0);
+                        maskOn(PUERTOD,tempMask16);
+                        
+                        
                         for (i=0,k=0 ; i < cantleds ; (i++, k+=50)) //inicializo los leds
                             {
-                            if (bitGet(PUERTOD,i) == true)    
+                            if (bitGet(PUERTOD,i) == false)    
                                     {
                                     al_draw_scaled_bitmap(ledrojo,
                                         0,0, al_get_bitmap_width(ledrojo),al_get_bitmap_height(ledrojo),
-                                        (k-WIDTH_LED),HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  //tamano que quiero que se imprima la imagen
+                                        (WIDTH_LED*i),HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  //tamano que quiero que se imprima la imagen
                                         0);
                                     al_flip_display();
                                     }
                                     
                                     else 
                                     {
-                                     BitSet (PUERTOD,i);  
+                                       
                                      al_draw_scaled_bitmap(ledverde,
                                         0,0, al_get_bitmap_width(ledverde),al_get_bitmap_height(ledverde),
-                                        (k-WIDTH_LED),HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  //tamano que quiero que se imprima la imagen
+                                        (WIDTH_LED*i),HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  //tamano que quiero que se imprima la imagen
                                         0);
                                     al_flip_display();  
                                     }
                             
                             }
                         break;
+                      
                        
                         
                         
                        
                     case ALLEGRO_KEY_ESCAPE:
                         close_display = true;
+                        
+                    case ALLEGRO_KEY_0:
+                        id = 0;
+                        decideLed(puerto_actual,id,ledverde,ledrojo );
+                        break;
+                    case ALLEGRO_KEY_1:
+                      id = 1;
+                      decideLed(puerto_actual,id,ledverde,ledrojo );
+                      break;
+                            
+                        
+                    case ALLEGRO_KEY_2:
+                        id = 2;
+                        decideLed(puerto_actual,id,ledverde,ledrojo );
+                        break;
+                case ALLEGRO_KEY_3:
+                    id = 3;
+                    decideLed(puerto_actual,id,ledverde,ledrojo );
+                    break;
+                case ALLEGRO_KEY_4:
+                    id = 4;
+                    decideLed(puerto_actual,id,ledverde,ledrojo );
+                    break;
+                case ALLEGRO_KEY_5:
+                    id = 5;
+                    decideLed(puerto_actual,id,ledverde,ledrojo );
+                    break;
+                case ALLEGRO_KEY_6:
+                    id = 6;
+                    decideLed(puerto_actual,id,ledverde,ledrojo );
+                    break;
+                case ALLEGRO_KEY_7:
+                    id = 7;
+                    decideLed(puerto_actual,id,ledverde,ledrojo );
+                    break;
+                
+                     
+                 
+                  
+
+                        
                     
                         
                 }
@@ -415,5 +437,56 @@ int main (void)
     
     
     return 0;
+}
+void decideLed(uint8_t portFlag, uint8_t bitFlag,ALLEGRO_BITMAP *ledverde, ALLEGRO_BITMAP *ledrojo ){
+   
+                        switch(portFlag)
+                        {
+                        case PUERTOB:
+                            if (bitGet(PUERTOB,bitFlag) == true)    
+                                    {
+                                    BitClr (PUERTOB,bitFlag);
+                                    al_draw_scaled_bitmap(ledrojo,
+                                        0,0, al_get_bitmap_width(ledrojo),al_get_bitmap_height(ledrojo),
+                                        (WIDTH_LED*(bitFlag+8)),HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  //tamano que quiero que se imprima la imagen
+                                        0);
+                                    al_flip_display();
+                                    }
+                                    
+                                    else 
+                                    {
+                                     BitSet (PUERTOB,bitFlag);  
+                                     al_draw_scaled_bitmap(ledverde,
+                                        0,0, al_get_bitmap_width(ledverde),al_get_bitmap_height(ledverde),
+                                        (WIDTH_LED*(8+bitFlag)),HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  //tamano que quiero que se imprima la imagen
+                                        0);
+                                    al_flip_display();  
+                                    }
+                        break;
+                        default:
+                                if (bitGet(PUERTOD,bitFlag) == true)    
+                                            {
+                                            BitClr (PUERTOD,bitFlag);
+                                            al_draw_scaled_bitmap(ledrojo,
+                                                0,0, al_get_bitmap_width(ledrojo),al_get_bitmap_height(ledrojo),
+                                                (WIDTH_LED*bitFlag),HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  //tamano que quiero que se imprima la imagen
+                                                0);
+                                            al_flip_display();
+                                            }
+
+                                            else 
+                                            {
+                                             BitSet (PUERTOD,bitFlag);  
+                                             al_draw_scaled_bitmap(ledverde,
+                                                0,0, al_get_bitmap_width(ledverde),al_get_bitmap_height(ledverde),
+                                                (WIDTH_LED*bitFlag),HEIGHT_LED,WIDTH_LED,HEIGHT_LED,  //tamano que quiero que se imprima la imagen
+                                                0);
+                                            al_flip_display();  
+                                            }
+                                break;
+
+                            
+                        }
+                      
 }
 
