@@ -230,12 +230,14 @@ void maskOn(uint8_t flag_puerto,uint16_t mask)
         break;
       case PUERTOD:
       {
-          nshifteado1=puertod.portab.portb;                             //SImilar a los puertos de 8 bits, pero ahora uso ambos bytes de la mascara contenida en la union
+          puertod.port = (puertod.port|mask);
+          
+          /*nshifteado1=puertod.portab.portb;                             //SImilar a los puertos de 8 bits, pero ahora uso ambos bytes de la mascara contenida en la union
           nshifteado1 = (nshifteado1 | (tempMask.portab.porta));
           puertod.portab.portb = nshifteado1;
           nshifteado2=puertod.portab.porta;
           nshifteado2 = (nshifteado2 | tempMask.portab.portb);
-          puertod.portab.porta = nshifteado2;
+          puertod.portab.porta = nshifteado2;*/
       }
         break;
       default:
